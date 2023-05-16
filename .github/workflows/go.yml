@@ -28,17 +28,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: go-build
     steps:        
-      - uses: docker/login-action@v2
-        with:
+    - uses: docker/login-action@v2
+      with:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
         
-      - uses: docker/setup-buildx-action@v1
+    - uses: docker/setup-buildx-action@v1
 
-      - name: Build the Docker image
-        uses: docker/build-push-action@v2
-        with:
+    - name: Build the Docker image
+      uses: docker/build-push-action@v2
+      with:
           context: .
           file: Dockerfile
           push: true
@@ -46,13 +46,13 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/myhello:${{ github.sha }}
             ${{ secrets.DOCKER_USERNAME }}/myhello:latest
             
-      - name: Test 
-        run: go test -v ./...
+    - name: Test 
+      run: go test -v ./...
       
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        continue-on-error: true
-        with:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      continue-on-error: true
+      with:
             image-ref: 's2210455017/myhello:latest'
             format: 'table'
             exit-code: '1'
